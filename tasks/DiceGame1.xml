@@ -1,0 +1,116 @@
+<Task>
+	<!-- reference task information -->
+	<Reference>
+		<Author>
+			<name>Tomasz Pokorski</name>
+			<link></link>
+		</Author>
+		
+		<Description>
+			<brief>Dice Game object recognition for IRp6</brief>
+			<full>Part of robotic system avaible to play dice game</full>	
+		</Description>
+	</Reference>
+	
+	<!-- task definition -->
+	<Subtasks>
+		<Subtask name="Main">
+			<Executor name="Processing"  period="1">
+				<Component name="Source" type="CvBasic:Sequence" priority="1" bump="0">
+					<param name="sequence.directory">%[TASK_LOCATION]%/../data/oldCamera/</param>
+					<param name="sequence.pattern">.*\.jpg</param>
+				</Component>
+
+				<Component name="CameraInfo" type="CvCoreTypes:CameraInfoProvider" priority="2">
+					<param name="camera_matrix">600 0 312 ; 0 600 160 ; 0 0 1</param>
+					<param name="dist_coeffs">-0.51084775, 0.23313555, 4.50637517e-03, -6.86281081e-03, 4.94365674e-03</param>
+				</Component>
+				
+				<Component name="Undistort" type="CvBasic:CvUndistort" priority="2" bump="0">
+				</Component>
+
+				<Component name="ColorConv" type="CvBasic:CvColorConv" priority="2" bump="0">
+					<param name="type">RGB2GRAY</param>
+				</Component>
+
+				<Component name="Threshold" type="CvBasic:CvThreshold" priority="2" bump="0">
+					<param name="type">BINARY</param>
+					<param name="maxval">255</param>
+					<param name="thresh">150</param>
+				</Component>
+
+				<Component name="FindSquares" type="DiceGame:DcFindSquares" priority="2" bump="0">
+					<param name="min">55</param>
+					<param name="max">1400</param>
+				</Component>
+
+				<Component name="CountDots" type="DiceGame:DcCountDots" priority="2" bump="0">
+					<!--param name="min">55</param>
+					<param name="max">1400</param-->
+				</Component>
+
+				<Component name="Decision" type="DiceGame:DcDecision" priority="2" bump="0">
+				</Component>
+
+				<Component name="DiceReading" type="DiceGame:DcDiceReading" priority="2" bump="0">
+				</Component>
+			</Executor>
+
+			<Executor name="Visualization" period="0.2">
+				<Component name="Window" type="CvBasic:CvWindow" priority="1" bump="5">
+					<param name="count">4</param>
+					<param name="title">Orginal, Dices, Dots, Decision</param>
+				</Component>
+			</Executor>
+		</Subtask>	
+	
+	</Subtasks>
+	
+	<!-- pipes connecting datastreams -->
+	<DataStreams>
+		<Source name="Source.out_img">
+			<sink>Undistort.in_img</sink>	
+			<sink>Window.in_img0</sink>			
+		</Source>
+		<Source name="CameraInfo.out_camera_info">
+			<sink>Undistort.in_camerainfo</sink>
+		</Source>
+		<Source name="Undistort.out_img">
+			<sink>ColorConv.in_img</sink>		
+		</Source>
+		<Source name="ColorConv.out_img">
+			<sink>Threshold.in_img</sink>		
+		</Source>
+		<Source name="Threshold.out_img">
+			<sink>FindSquares.in_img</sink>		
+		</Source>
+		<Source name="Threshold.out_img">
+			<sink>CountDots.in_img</sink>		
+		</Source>
+		<Source name="Threshold.out_img">
+			<sink>Decision.in_img</sink>		
+		</Source>
+		<Source name="FindSquares.out_contours">
+			<sink>Decision.in_contours</sink>		
+		</Source>
+		<Source name="Decision.out_angle">
+			<sink>DiceReading.in_angle</sink>		
+		</Source>
+		<Source name="CountDots.out_dots">
+			<sink>DiceReading.in_dots</sink>		
+		</Source>
+		<Source name="FindSquares.out_img">
+			<sink>Window.in_img1</sink>		
+		</Source>
+		<Source name="CountDots.out_img">
+			<sink>Window.in_img2</sink>		
+		</Source>
+		<Source name="Decision.out_img">
+			<sink>Window.in_img3</sink>		
+		</Source>
+	</DataStreams>
+</Task>
+
+
+
+
