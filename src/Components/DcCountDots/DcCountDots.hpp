@@ -83,6 +83,8 @@ protected:
 	Base::Property<int> x_limit;
 	Base::Property<int> y_limit;
 	Base::Property<int> mask_size;
+	Base::Property<int> min_size;
+	Base::Property<int> max_size;
 
 	
 	// Handlers

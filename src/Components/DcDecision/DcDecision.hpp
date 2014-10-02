@@ -77,14 +77,16 @@ protected:
 
 	// Output data streams
 	Base::DataStreamOut<cv::Mat> out_img;
-	Base::DataStreamOut<Types::HomogMatrix> out_homogMatrix;
-	Base::DataStreamOut<double> out_angle;
+	//Base::DataStreamOut<Types::HomogMatrix> out_homogMatrix;
+	Base::DataStreamOut<float> out_pos_x;
+	Base::DataStreamOut<float> out_pos_y;
+	Base::DataStreamOut<float> out_angle;
 
 	// Handlers
 	Base::EventHandler2 h_ProcessingImage;
 
 	// Properties
-
+	Base::Property<double> dilation_size;
 	
 	// Handlers
 	void ProcessingImage();

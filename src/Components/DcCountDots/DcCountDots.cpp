@@ -19,9 +19,13 @@ DcCountDots::DcCountDots(const std::string & name) :
 		Base::Component(name) , 
 		x_limit("x_limit", 280), 
 		y_limit("y_limit", 200), 
-		mask_size("mask_size", 80) {
+		mask_size("mask_size", 80), 
+		min_size("min_size", 5), 
+		max_size("max_size", 50) {
 	registerProperty(x_limit);
 	registerProperty(y_limit);
+	registerProperty(min_size);
+	registerProperty(max_size);
 	registerProperty(mask_size);
 
 }
@@ -91,9 +95,9 @@ void DcCountDots::ProcessImage() {
      	{
 		approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.08, true);
 		mm = moments(Mat(approx), true);
- 		if (fabs(contourArea(Mat(approx))) > 5 && fabs(contourArea(Mat(approx))) < 50 &&
-			mm.m10/mm.m00 < x_limit+mask_size-20 && mm.m10/mm.m00 > x_limit+20 &&
-			mm.m01/mm.m00 < y_limit+mask_size-20 && mm.m01/mm.m00 > y_limit+20)
+ 		if (fabs(contourArea(Mat(approx))) > min_size && fabs(contourArea(Mat(approx))) < max_size &&
+			mm.m10/mm.m00 < x_limit+mask_size && mm.m10/mm.m00 > x_limit &&
+			mm.m01/mm.m00 < y_limit+mask_size && mm.m01/mm.m00 > y_limit)
             	{
 			drawContours(drawing, contours, i, cv::Scalar(0.0,255.0,0.0), 0, 8, hierarchy, 0, Point());			
 			dots.push_back(contours[i]);
@@ -127,7 +131,7 @@ void DcCountDots::ProcessImage() {
 
 
     } catch (exception& ex) {
-        LOG(LERROR) << "DcDecision::onNewContours \n"  << ex.what() << endl;
+        LOG(LERROR) << "DcCountDots::ProcessImage \n"  << ex.what() << endl;
     }
 }
 

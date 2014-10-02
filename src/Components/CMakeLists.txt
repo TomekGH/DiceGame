@@ -7,3 +7,5 @@ ADD_COMPONENT(DcFindSquares)
 ADD_COMPONENT(DcDecision)
 
 ADD_COMPONENT(DcDiceReading)
+
+ADD_COMPONENT(ResizeImage)
